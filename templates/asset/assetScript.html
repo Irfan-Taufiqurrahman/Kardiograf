@@ -1,0 +1,120 @@
+{% load static %}
+<a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/aos/aos.js' %}"></script>
+<script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+<script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static 'js/main.js' %}"></script>
+
+
+<!-- placeholder signup (birthdate) -->
+<script>
+  const input = document.getElementById('birthdate');
+  const placeholderText = '';
+
+  input.value = placeholderText;
+
+  input.addEventListener('focus', function() {
+    if (input.value === placeholderText) {
+      input.value = '';
+      input.type = 'date';
+    }
+  });
+
+  input.addEventListener('blur', function() {
+    if (!input.value) {
+      input.type = 'text';
+      input.value = placeholderText;
+    }
+  });
+</script>
+
+
+<!-- validation password match-->
+<script>
+  function validatePassword() {
+    var pass1 = document.getElementById("pass1").value;
+    var pass2 = document.getElementById("pass2").value;
+
+    if (pass1 !== pass2) {
+      alert("Passwords do not match");
+      return false;
+    }
+    return true;
+  }
+</script>
+
+<script>
+  let hideTimeout;
+
+  function showDropdown() {
+      document.querySelector('.dropdown-toggle').classList.add('show');
+  }
+
+  function hideDropdown() {
+      hideTimeout = setTimeout(() => {
+          document.querySelector('.dropdown-toggle').classList.remove('show');
+      }, 500); // Adjust the delay (in milliseconds) as needed
+  }
+
+  function cancelHide() {
+      clearTimeout(hideTimeout);
+  }
+</script>
+
+<!-- Chart Berth Rate-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+
+<!-- script datatables.net -->
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+    $('#usersTable').DataTable({
+      responsive: true // Enable responsive extension
+    });
+  });
+</script>
+<script>
+  function deleteUser(userId, userName) {
+      var confirmationMessage = 'Are you sure you want to delete user ' + userName + '?';
+      if (confirm(confirmationMessage)) {
+          // You can use AJAX to send a request to the server for deleting the user
+          // For simplicity, let's assume you have a URL endpoint for user deletion
+          var url = '/delete_user/' + userId + '/';
+          fetch(url, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': '{{ csrf_token }}',
+              },
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Reload the page or update the table as needed
+                  location.reload();
+              } else {
+                  alert('Failed to delete user.');
+              }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+  }
+  </script>
+
+</body>
+
+</html>

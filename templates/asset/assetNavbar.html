@@ -1,0 +1,61 @@
+{% load static %}
+{% include 'asset/assetHeader.html' %}
+<style>
+    .custom-dropdown {
+        list-style-type: none; /* Remove default list marker */
+        padding-left: 0; /* Remove default left padding */
+    }
+    .user-icon {
+        margin-right: 8px;
+    }
+</style>
+
+
+<body>
+    <header id="header" class="header d-flex align-items-center">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+            <a href="/" class="logo d-flex align-items-center">
+                <h1>Kardiograf<span>.</span></h1>
+            </a>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li>
+                        {% if user.is_authenticated %}
+                            <a href="/kardiograf">Monitoring</a>
+                        {% else %}
+                            <a href="/error">Monitoring</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if user.is_authenticated %}
+                        <a href="/rekam-medik">Rekam Medis Monitoring</a>
+                        {% else %}
+                            <a href="/error">Rekam Medis Monitoring</a>
+                        {% endif %}
+                    </li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <!-- .navbar -->
+
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown custom-dropdown" onmouseover="showDropdown()" onmouseout="hideDropdown()">
+                    <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user }}
+                    </a>
+                    <div class="dropdown-menu mt-3 text-center" aria-labelledby="navbarDropdown" id="dropdown" onmouseover="cancelHide()">
+                        <a class="dropdown-item text-dark-50" href="{% url 'profile' %}"><i class="bi bi-person"></i>
+                            profile
+                            <!-- ({{ user.kardiografuser.first.role }}) -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="{% url 'logout' %}"> <i class="bi bi-exit"></i>Logout</a>
+                    </div>
+                </li>
+            {% endif %}
+
+        </div>
+    </header>
+    <!-- End Header -->
+</body>

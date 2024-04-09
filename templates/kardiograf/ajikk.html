@@ -1,0 +1,309 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fetal Heart Rate Simulation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      /* Arrange elements vertically (new) */
+      align-items: center;
+      justify-content: center;
+      /* height: 80vh;
+      margin: 0; */
+    }
+
+    .chart-container {
+      width: 800px;
+      /* height: 400px; */
+      /* margin: 10px; */
+      display: flex;
+      flex-direction: column;
+      /* Charts within container stack vertically */
+    }
+
+    /* #resetButton {
+      margin-top: 20px;
+    } */
+
+    .numeric-value {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #timer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px;
+      background-color: #ccc;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+  <div class="chart-container">
+    <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
+    <div id="valueChart1" class="numeric-value"></div>
+    <div id="valueBPM" class="numeric-value"></div>
+  </div>
+  <div class="chart-container">
+    <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
+    <div id="valueChart2" class="numeric-value"></div>
+  </div>
+  <div class="chart-container">
+    <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
+    <div id="valueChart3" class="numeric-value"></div>
+  </div>
+  <div class="chart-container">
+    <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
+    <div id="valueChart4" class="numeric-value"></div>
+  </div>
+  <div class="chart-container">
+    <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
+    <div id="valueChart5" class="numeric-value"></div>
+  </div>
+  <div class="chart-container">
+    <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
+    <div id="valueChart6" class="numeric-value"></div>
+  </div>
+  <button id="resetButton">Reset Charts</button>
+  <script>
+    let startTime = new Date().getTime();
+    let elapsedTime = 0;
+
+    // setInterval(() => {
+    //   elapsedTime = (new Date().getTime() - startTime) / 1000;
+    //   document.getElementById(
+    //     "timer"
+    //   ).innerHTML = `Waktu: ${elapsedTime} detik`;
+    // }, 1000);
+
+    const dataLead1 = [];
+    const dataLead2 = [];
+    const dataLead3 = [];
+    const dataLeadAVR = [];
+    const dataLeadAVL = [];
+    const dataLeadAVF = [];
+    const labels = [];
+
+    const updateChart = (chartId, chartTitle, chartData, valueId, max) => {
+      const chart = new Chart(document.getElementById(chartId), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: chartTitle,
+              data: chartData,
+              borderColor: "#333",
+              borderWidth: 2,
+              fill: false,
+              lineTension: 0,
+            },
+          ],
+        },
+        options: {
+          animation: false,
+          title: {
+            display: true,
+            text: chartTitle,
+          },
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  ticks: {
+                    // Ensure both positive and negative values are visible
+                    suggestedMin: -max,
+                    suggestedMax: max,
+                  },
+                },
+                gridLines: {
+                  color: "red" /* Set grid line color to red */,
+                  lineWidth: 0.5 /* Increase line width for more solid appearance */,
+                },
+              },
+            ],
+            xAxes: [
+              {
+                gridLines: {
+                  color: "red" /* Set grid line color to red */,
+                  lineWidth: 0.5 /* Increase line width for more solid appearance */,
+                },
+              },
+            ],
+          },
+          legend: { // Deprecated option (for older Chart.js versions)
+            display: false,
+          },
+        },
+      });
+
+      const valueElement = document.getElementById(valueId);
+      valueElement.innerHTML = `Nilai: ${chartData[chartData.length - 1]}`;
+    }
+
+    // Display numeric value
+    // console.log(valueId)
+
+    const resetCharts = () => {
+      dataLead1.length = 0;
+      dataLead2.length = 0;
+      labels.length = 0;
+
+      // Clear existing charts
+      Chart.helpers.each(Chart.instances, (instance) => {
+        instance.destroy();
+      });
+
+      // Clear numeric values
+      document.getElementById("valueChart1").innerHTML = "Nilai: ";
+      document.getElementById("valueChart2").innerHTML = "Nilai: ";
+
+      // Recreate charts with updated data
+      updateAllCharts();
+    };
+
+    const updateAllCharts = () => {
+      updateChart(
+        "chart1",
+        "Lead I",
+        dataLead1,
+        "valueChart1",
+        (max = 300)
+      );
+      updateChart(
+        "chart2",
+        "Lead II",
+        dataLead2,
+        "valueChart2",
+        (max = 80)
+      );
+      updateChart(
+        "chart3",
+        "Lead III",
+        dataLead3,
+        "valueChart3",
+        (max = 80)
+      );
+      updateChart(
+        "chart4",
+        "Lead aVR",
+        dataLeadAVR,
+        "valueChart4",
+        (max = 80)
+      );
+      updateChart(
+        "chart5",
+        "Lead aVL",
+        dataLeadAVL,
+        "valueChart5",
+        (max = 80)
+      );
+      updateChart(
+        "chart6",
+        "Lead aVF",
+        dataLeadAVF,
+        "valueChart6",
+        (max = 80)
+      );
+    };
+
+    document
+      .getElementById("resetButton")
+      .addEventListener("click", resetCharts);
+
+    const topic = "ekg/ajik";
+    const clientId = "mqttjs_" + Math.random().toString(16).substr(2, 8);
+    const host = "ws://broker.emqx.io:8083/mqtt";
+    const options = {
+      keepalive: 60,
+      clientId: clientId,
+      protocolId: "MQTT",
+      protocolVersion: 4,
+      clean: true,
+      reconnectPeriod: 1000,
+      connectTimeout: 30 * 1000,
+      will: {
+        topic: "WillMsg",
+        payload: "Connection Closed abnormally..!",
+        qos: 0,
+        retain: false,
+      },
+    };
+
+    console.log("Connecting mqtt client");
+    const client = mqtt.connect(host, options);
+    client.on("error", (err) => {
+      console.log("Connection error: ", err);
+      client.end();
+    });
+    client.on("reconnect", () => {
+      console.log("Reconnecting...");
+    });
+    client.on("connect", function () {
+      console.log("Connected to MQTT broker, with topic = " + topic);
+      client.subscribe(topic, { qos: 0 });
+    });
+
+    client.on("message", (topic, message, packet) => {
+      var now = new Date();
+      var currentMinute = now.getMinutes();
+      var currentSecond = now.getSeconds();
+      var currentMillisecond = now.getMilliseconds();
+      var currentTime = currentMinute + ":" + currentSecond + "." + currentMillisecond;
+
+      console.log(`${currentTime} - ${message.toString()}`);
+
+      const dataString = message.toString();
+      const dataArray = dataString.split(",").map(parseFloat);
+
+      for (let i = 0; i < dataArray.length - 1; i += 2) {
+        const lead1 = dataArray[i];
+        const lead2 = dataArray[i + 1];
+
+        dataLead1.push(lead1);
+        dataLead2.push(lead2);
+        dataLead3.push(lead2 - lead1);
+        dataLeadAVR.push(-1 * (lead1 + lead2 / 2));
+        dataLeadAVL.push(lead1 - (lead2 / 2));
+        dataLeadAVF.push(lead2 - (lead1 / 2));
+        // labels.push(i); // to show value sumbu x
+        labels.push("");
+
+        if (dataLead1.length > 150) {
+          dataLead1.shift();
+          dataLead2.shift();
+          dataLead3.shift();
+          dataLeadAVR.shift();
+          dataLeadAVL.shift();
+          dataLeadAVF.shift();
+          labels.shift();
+        }
+      }
+
+      updateAllCharts();
+
+      const bpm = dataArray[dataArray.length - 1];
+
+      const valueBPM = document.getElementById("valueBPM");
+      valueBPM.innerHTML = `BPM: ${bpm}`;
+    });
+
+  </script>
+</body>
+
+</html>
+
+</html>

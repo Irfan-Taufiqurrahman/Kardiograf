@@ -1,0 +1,64 @@
+{% load static %}
+{% include 'asset/assetHeaderAuth.html' %}
+  <div class="wrapper-auth">
+    <div class="container main">
+        <div class="row" id="box-signup">
+            <div class="col-md-6 side-image">        
+                <!-------------      image     ------------->
+                <img src="images/white.png" alt="">
+                <div class="text">
+                    <p>Join the community of developers <i>- ludiflex</i></p>
+                </div>
+            </div>
+
+            <div class="col-md-6 right">
+                <div class="input-box">
+                    <header>Create account</header>
+                    <form action="{% url 'signup' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-field">
+                                <input class="input" type="text" name="username" id="usernameField" required="">
+                                <label for="username">username</label>
+                            </div>
+                            <div class="invalid_feedback invalid-feedback text-center" style="display: none;"></div>
+                            <p class="text-sm text-success usernameSuccessOutput" style="display: none;"></p>
+                            <div class="input-field">
+                                <input class="input" type="text" name="address" id="address" required="">
+                                <label for="address">Address</label>
+                            </div> 
+                            <div class="input-field">
+                                <input class="input" type="text" id="birthdate" name="birthdate" required="">
+                                <label for="birthdate">date of birth</label>
+                            </div> 
+                            <div class="input-field">
+                                <input class="input" type="email" name="email" id="emailField"  autocomplete="off" required="">
+                                <label for="email">Email</label> 
+                            </div>
+                            <div class="emailFeedBackArea invalid-feedback text-center" style="display: none;">
+                                
+                            </div>
+                            <div class="input-field">
+                                <input class="input" type="password" name="pass1" id="pass1" required="">
+                                <label for="pass1">Password</label>
+                            </div> 
+                            <div class="input-field">
+                                <input class="input" type="password" name="pass2" id="pass2" required="">
+                                <label for="pass2">Password</label>
+                            </div> 
+                            <div class="input-field">
+                                <input type="submit" class="submit submit-btn" value="Sign Up">
+                            </div> 
+                            <div class="signin">
+                                <span>Already have an account? <a href="/authentication/login">Log in here</a></span>
+                            </div>
+                        </div>
+                    </form>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/register.js' %}"></script>
+
+{% include 'asset/assetScript.html' %}

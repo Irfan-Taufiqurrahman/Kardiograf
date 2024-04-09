@@ -1,0 +1,49 @@
+{% load static %}
+{% include 'asset/assetHeaderAuth.html' %}
+<body>
+  {% include 'asset/assetNavbar.html' %}
+  {% block content %}
+    <section>
+      <div class="container position-relative">
+        {% if user.is_authenticated %}
+        <p>User: {{ user }}</p>
+        <!-- <p>Kardiograf User: {{ user.kardiografuser.first }}</p> -->
+        <p>Your role is: {{ user.kardiografuser.first.role }}</p>
+        <!-- Show content for authenticated users -->
+        {% else %}
+        <h1>Welcome, Guest!</h1>
+        <!-- Show content for guests or non-authenticated users -->
+        {% endif %}
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Heart Rate History</h2>
+        <h3>{{ user.username }}'s Heart Rate Data</h3>
+
+        <table id="heartRateDataTable_{{ user.id }}" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Date/Time</th>
+              <th>Beats per Minute (BPM)</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Chart -->
+    <section>
+      <div class="container">
+        <canvas id="chartRekamMedik"></canvas>
+      </div>
+    </section>
+  {% endblock %}
+</body>
+
+{% include 'asset/assetScript.html' %}

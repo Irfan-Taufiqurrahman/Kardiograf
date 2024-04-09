@@ -1,0 +1,49 @@
+.page_404
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust as needed */
+}
+
+.content_box_404
+{
+    text-align: center;
+}
+
+.page_404 img
+{
+    width: 100%;
+}
+
+.four_zero_four_bg
+{
+    background: url('../img/bg.gif');
+    height: 400px;
+    background-position: center;
+}
+
+h1
+{
+    font-size: 80px;
+}
+
+h3
+{
+    font-size: 80px;
+}
+
+a
+{
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    background: #39ac31;
+    display: inline-block;
+}
+
+a:hover
+{
+    text-decoration: none;
+    color: #fff;
+}

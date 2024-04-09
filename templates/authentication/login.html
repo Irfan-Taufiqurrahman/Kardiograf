@@ -1,0 +1,47 @@
+{% load static %}
+{% include 'asset/assetHeaderAuth.html' %}
+
+{% block content %}
+<body>
+  <div class="wrapper-auth">
+    <div class="container main">
+        <div class="row" id="box-login">
+            <div class="col-md-6 side-image">        
+                <!-------------      image     ------------->
+                <img src="{% static 'img/img-auth.jpg' %}" class="img-fluid" alt="Authentication Image">
+            </div>
+            <div class="col-md-6 right">
+                <div class="input-box">
+                    <header>Login account</header>
+                    <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-field">
+                                    <input type="text" class="input" name="username" id="username" required="" autocomplete="off">
+                                    <label for="username">username</label> 
+                                </div> 
+                            <div class="input-field">
+                                    <input type="password" class="input" name="password" id="password" required="">
+                                    <label for="pass">Password</label>
+                                </div> 
+                            <div class="input-field">
+                                    <input type="submit" class="submit submit-btn" value="Login">
+                            </div> 
+                            <div class="signin">
+                                    <span>Haven't an account? <a href="/authentication/signup">Signup here</a></span>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Display messages -->
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}

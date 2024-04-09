@@ -1,0 +1,35 @@
+            <!-- Login Modal -->
+            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="main-modal">
+                                <input type="checkbox" id="chk" aria-hidden="true">
+                                <div class="login">
+                                    <form action="/login" method="POST">
+                                        {% csrf_token %}
+                                        <label for="chk" aria-hidden="true">Login</label>
+                                            <input for="email" name="email" id="email" placeholder="Fill Your E-Mail" required="">
+                                            <input for="password" type="password" name="pass1" id="pass1" placeholder="Fill Your Password" required="">
+                                        <button type="submit" class="button-auth"><a href="/login"></a> Login</button>
+                                    </form>
+                                </div>
+                                <div class="signup">
+                                    <form action="/signup" method="POST" onsubmit="return validatePassword()">
+                                        {% csrf_token %}
+                                        <label for="chk" aria-hidden="true">Signup</label>
+                                            <input for="text" name="txt" id="username" placeholder="Fill Your Fullname" required="">
+                                            <input for="text" name="txt" id="Address" placeholder="Fill Your Address" id="" required="">
+                                            <input for="birthdate" type="text" id="birthdate" name="birthdate" id="birthdate" required="">
+                                            <input for="email" name="email" id="email" placeholder="Fill Your E-Mail" required="">
+                                            <input for="password" type="password" name="pass1" id="pass1" placeholder="Fill Your Password" required="">
+                                            <input for="password" type="password" name="pass2" id="pass2" placeholder="Fill Again Your Password" required="">
+                                        <button type="submit" class="button-auth"><a href="/signup"></a>Signup</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          <!-- End of Login Modal -->

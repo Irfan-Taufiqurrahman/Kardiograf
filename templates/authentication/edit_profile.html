@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+    {% block content %}
+        <div class="container">
+            <form method="post" action="{% url 'edit_profile' %}" class="mt-4" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="address" class="form-label">Alamat:</label>
+                    <input type="text" id="address" name="address" value="{{ user_kardiograf.address }}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="birthdate" class="form-label">Tanggal Lahir:</label>
+                    <input type="date" id="birthdate" name="birthdate" value="{{ user_kardiograf.birthdate }}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="numberPhone" class="form-label">Nomor Telefon:</label>
+                    <input type="text" id="numberPhone" name="numberPhone" value="{{ user_kardiograf.numberPhone }}" class="form-control" required>
+                </div>
+
+                <!-- Add the field for imageUser if you want to allow users to update their profile image -->
+                <div class="mb-3">
+                    <label for="imageUser" class="form-label">Foto Profil:</label>
+                    <input type="file" id="imageUser" name="imageUser" accept="image/*" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    {% endblock %}
+</body>
+</html>
