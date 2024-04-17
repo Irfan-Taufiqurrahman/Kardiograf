@@ -379,6 +379,7 @@
       const formData = new FormData();
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}'); // Add this line
       // Push individual values to the arrays
+      //if you want get all data just delete .slice(-150)
       dataLead1.slice(-150).forEach(lead1 => formData.append('data_lead1', lead1));
       dataLead2.slice(-150).forEach(lead2 => formData.append('data_lead2', lead2));
       dataLead3.slice(-150).forEach(lead3 => formData.append('data_lead3', lead3));
