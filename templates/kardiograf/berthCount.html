@@ -206,6 +206,7 @@
                 borderWidth: 2,
                 fill: false,
                 lineTension: 0,
+                pointRadius: 0,
               },
             ],
           },
@@ -355,7 +356,7 @@
           dataLeadAVF.push(lead2 - lead1 / 2);
           labels.push("");
   
-          if (dataLead1.length > 150) {
+          if (dataLead1.length > 200) {
             dataLead1.shift();
             dataLead2.shift();
             dataLead3.shift();

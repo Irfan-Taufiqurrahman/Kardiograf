@@ -110,6 +110,7 @@
               borderWidth: 2,
               fill: false,
               lineTension: 0,
+              pointRadius: 0,
             },
           ],
         },
@@ -279,10 +280,9 @@
         dataLeadAVR.push(-1 * (lead1 + lead2 / 2));
         dataLeadAVL.push(lead1 - (lead2 / 2));
         dataLeadAVF.push(lead2 - (lead1 / 2));
-        // labels.push(i); // to show value sumbu x
         labels.push("");
 
-        if (dataLead1.length > 150) {
+        if (dataLead1.length > 200) {
           dataLead1.shift();
           dataLead2.shift();
           dataLead3.shift();
