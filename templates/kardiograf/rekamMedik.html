@@ -6,44 +6,54 @@
     <section>
       <div class="container position-relative">
         {% if user.is_authenticated %}
-        <p>User: {{ user }}</p>
-        <!-- <p>Kardiograf User: {{ user.kardiografuser.first }}</p> -->
-        <p>Your role is: {{ user.kardiografuser.first.role }}</p>
-        <!-- Show content for authenticated users -->
-        {% else %}
-        <h1>Welcome, Guest!</h1>
-        <!-- Show content for guests or non-authenticated users -->
+        <p>ini konten, cuma gatau dibuat apa</p>
+        
         {% endif %}
       </div>
     </section>
 
+    <!-- Table History -->
     <section>
       <div class="container">
         <h2>Heart Rate History</h2>
         <h3>{{ user.username }}'s Heart Rate Data</h3>
-
-        <table id="heartRateDataTable_{{ user.id }}" class="display" style="width:100%">
+        <!-- Table to display heart rate data -->
+        <table id="heartRateTable" class="display">
           <thead>
-            <tr>
-              <th>Date/Time</th>
-              <th>Beats per Minute (BPM)</th>
+            <tr class="text-center">
+              <!-- <th>ID</th> -->
+              <th>Tanggal dan Waktu</th>
+              <th>User</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-
+          <tbody class="text-center">
+            <!-- Data will be loaded dynamically -->
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Chart -->
-    <section>
-      <div class="container">
-        <canvas id="chartRekamMedik"></canvas>
-      </div>
-    </section>
+    
   {% endblock %}
 </body>
+<script>
+  $(document).ready(function() {
+    // Initialize DataTable
+    $('#heartRateTable').DataTable({
+      "ajax": {
+        "url" : "{% url 'viewPerhitunganData' %}",
+        "dataSrc": "data"
+      },
+      "columns": [
+        // { "data": "id" },
+        { "data": "timestamp" },
+        { "data": "user_name", "className": "dt-center" },
+        { "data": "action", "className": "dt-center" }
+      ]
+    });
+  });
+</script>
+
 
 {% include 'asset/assetScript.html' %}

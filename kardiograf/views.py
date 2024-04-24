@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from kardiograf.models import kardiografUser, HeartRateData
 from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
 import json, logging, time, random
 from kardiograf.publish import run as publish_run
 from kardiograf.subscribe import run as subscribe_run
@@ -117,6 +118,33 @@ class kardiograf:
 
         # else:
         #     return render(request, 'ekg_form.html')  # Render a form template (if needed)
+
+    def delete_perhitungan(request, pk):
+        perhitungan = get_object_or_404(Perhitungan, pk=pk)
+        perhitungan.delete()
+        # return JsonResponse({'message': 'Perhitungan deleted successfully'})
+        return redirect('rekamMedik')
+
+    def heart_rate_history(request):
+        perhitungan_data = Perhitungan.objects.all()
+        data = []
+        for perhitungan in perhitungan_data:
+            user_name = perhitungan.user.username if perhitungan.user else "Unknown"
+            delete_url = reverse('delete_perhitungan', kwargs={'pk': perhitungan.id})
+            action_html = f'<a href="{delete_url}"><i class="fa-regular fa-trash-can" style="color: #f50a0a; padding: 15px;"></i></a> ' \
+                      f'<i class="fa-solid fa-info" style="color: #74C0FC; padding: 15px;"></i>'
+    
+            # Format the timestamp as 'Saturday, 24 July 2024 - 15:10:12'
+            timestamp_formatted = perhitungan.timestamp.strftime('%A, %d %B %Y - %H:%M:%S')
+
+            data.append({
+                'id': perhitungan.id,
+                'timestamp': timestamp_formatted,
+                'user_id': perhitungan.user_id,
+                'user_name': user_name,
+                'action': action_html
+            })
+        return JsonResponse({'data': data})
 
 
 class errorPage:

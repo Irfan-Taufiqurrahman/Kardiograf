@@ -74,10 +74,10 @@
 
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="icon-box">
-              <div class="icon"><i class="bi bi-easel"></i></div>
+              <div class="icon"><i class="bi bi-activity"></i></div>
               <h4 class="title">
                 {% if user.is_authenticated %}
-                <a href="/kardiograf" class="stretched-link">Monitoring</a>
+                <a href="/kardiograf" class="stretched-link">Hearth Rate</a>
                 {%else%}
                 <a href="" class="stretched-link">Control</a>
                 {% endif %}
@@ -87,10 +87,10 @@
 
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="icon-box">
-              <div class="icon"><i class="bi bi-gem"></i></div>
+              <div class="icon"><i class="bi bi-clock-history"></i></div>
               <h4 class="title">
                 {% if user.is_authenticated %}
-                <a href="#" class="stretched-link">Rekam Medis Monitoring</a>
+                <a href="/rekam-medik" class="stretched-link">History</a>
                 {%else%}
                 <a href="" class="stretched-link">Healty</a>
                 {% endif %}
