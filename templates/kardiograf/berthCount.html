@@ -1,52 +1,59 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-container {
+      width: 600px;
+      /* max-width: 800px; */
+      /* height: 400px; */
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      /* Charts within container stack vertically */
+    }
+
+    /* #resetButton {
+      margin-top: 20px;
+    } */
+
+    .numeric-value {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #timer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px;
+      background-color: #ccc;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #hero{
+      padding-top: 150px;
+    }
+    #MQTT-CHART {
+        display: none;
+    }
+    
+  </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include 'asset/assetNavbar.html' %}
     <title>Fetal Heart Rate Simulation</title>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        /* Arrange elements vertically (new) */
-        align-items: center;
-        justify-content: center;
-        /* height: 80vh;
-        margin: 0; */
-      }
-  
-      .chart-container {
-        width: 800px;
-        /* height: 400px; */
-        /* margin: 10px; */
-        display: flex;
-        flex-direction: column;
-        /* Charts within container stack vertically */
-      }
-  
-      /* #resetButton {
-        margin-top: 20px;
-      } */
-  
-      .numeric-value {
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 10px;
-      }
-  
-      #timer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 10px;
-        background-color: #ccc;
-        font-size: 20px;
-        font-weight: bold;
-      }
-    </style>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
 </head>
 <body>
   <section id="hero" class="hero">
@@ -111,42 +118,68 @@
   </section>
     
   <section id="hitung-detak">
-    <div class="container">
+    <div class="container text-center">
       <h1 class="text-center">Pengukuran Detak Jantung</h1>
-      <button id="startButton">Start Count</button>
-      <button id="resetButton" style="display: none;">Reset Charts</button>
+      <button id="startButton" class="btn btn-outline-info">Start Count</button>
+      <!-- <button id="resetButton" class="btn btn-outline-warning" style="display: none;">Reset Charts</button> -->
     </div>
   </section>
   
   <section id="MQTT-CHART">
-    <div class="chart-container">
-      <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
-      <div id="valueChart1" class="numeric-value"></div>
-      <div id="valueBPM" class="numeric-value"></div>
+    <div class="container">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <div class="chart-container">
+            <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
+            <div id="valueChart1" class="numeric-value"></div>
+            <div id="valueBPM" class="numeric-value"></div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
+            <div id="valueChart2" class="numeric-value"></div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
+            <div id="valueChart3" class="numeric-value"></div>
+          </div>
+        </div>
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <div class="chart-container">
+            <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
+            <div id="valueChart4" class="numeric-value"></div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
+            <div id="valueChart5" class="numeric-value"></div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
+            <div id="valueChart6" class="numeric-value"></div>
+          </div>
+        </div>
+      </div>
+      <button id="saveButton" class="btn btn-outline-success" style="display: none;">Save</button>
     </div>
-    <div class="chart-container">
-      <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
-      <div id="valueChart2" class="numeric-value"></div>
-    </div>
-    <div class="chart-container">
-      <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
-      <div id="valueChart3" class="numeric-value"></div>
-    </div>
-    <div class="chart-container">
-      <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
-      <div id="valueChart4" class="numeric-value"></div>
-    </div>
-    <div class="chart-container">
-      <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
-      <div id="valueChart5" class="numeric-value"></div>
-    </div>
-    <div class="chart-container">
-      <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
-      <div id="valueChart6" class="numeric-value"></div>
-    </div>
-    <button id="saveButton" style="display: none;">Save</button>
-
   </section>
+  
+  <!-- Modal Structure -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Success</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>You have successfully saved data hitung detak jantung.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script>
     // Declare variables outside of event listeners
@@ -169,24 +202,17 @@
       // Hide the start button
       document.getElementById("startButton").style.display = "none";
   
-      let startTime = new Date().getTime();
-      let elapsedTime = 0;
+      // let startTime = new Date().getTime();
+      // let elapsedTime = 0;
       let receiveData = true;
   
       // Show the reset button after 30 seconds
       setTimeout(() => {
-        document.getElementById("resetButton").style.display = "block";
+        receiveData = false;
+        // document.getElementById("resetButton").style.display = "block";
         document.getElementById("saveButton").style.display = "block";
         receiveData = false; // Stop receiving data
       }, 30000);
-  
-      // const dataLead1 = [];
-      // const dataLead2 = [];
-      // const dataLead3 = [];
-      // const dataLeadAVR = [];
-      // const dataLeadAVL = [];
-      // const dataLeadAVF = [];
-      // const labels = [];
   
       const updateChart = (chartId, chartTitle, chartData, valueId, max) => {
         // Destroy existing Chart instance if it exists
@@ -248,7 +274,8 @@
         });
   
         const valueElement = document.getElementById(valueId);
-        valueElement.innerHTML = `Value: ${chartData[chartData.length - 1]}`;
+        valueElement.innerHTML = `Value: ${chartData[chartData.length - 1]}`;        
+
       };
   
       const updateAllCharts = () => {
@@ -373,6 +400,8 @@
   
         const valueBPM = document.getElementById("valueBPM");
         valueBPM.innerHTML = `BPM: ${bpm}`;
+        document.getElementById("MQTT-CHART").style.display = "block";
+
       });
     });
     document.getElementById("saveButton").addEventListener("click", () => {
@@ -399,6 +428,8 @@
       .then(response => {
           if (response.ok) {
               console.log('Data saved successfully.');
+              var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
           } else {
               console.error('Failed to save data.');
           }

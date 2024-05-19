@@ -1,59 +1,294 @@
 {% load static %}
 {% include 'asset/assetHeaderAuth.html' %}
+
 <body>
   {% include 'asset/assetNavbar.html' %}
   {% block content %}
-    <section>
-      <div class="container position-relative">
-        {% if user.is_authenticated %}
-        <p>ini konten, cuma gatau dibuat apa</p>
-        
-        {% endif %}
-      </div>
-    </section>
+  <section>
+    <div class="container position-relative">
+      {% if user.is_authenticated %}
+      <p>ini konten, cuma gatau dibuat apa</p>
 
-    <!-- Table History -->
-    <section>
-      <div class="container">
-        <h2>Heart Rate History</h2>
-        <h3>{{ user.username }}'s Heart Rate Data</h3>
-        <!-- Table to display heart rate data -->
-        <table id="heartRateTable" class="display">
-          <thead>
-            <tr class="text-center">
-              <!-- <th>ID</th> -->
-              <th>Tanggal dan Waktu</th>
-              <th>User</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <!-- Data will be loaded dynamically -->
-          </tbody>
-        </table>
-      </div>
-    </section>
+      {% endif %}
+    </div>
+  </section>
 
-    
+  <!-- Table History -->
+  <section>
+    <div class="container">
+      <h2>Heart Rate History</h2>
+      <h3>{{ user.username }}'s Heart Rate Data</h3>
+      <!-- Table to display heart rate data -->
+      <table id="heartRateTable" class="display">
+        <thead>
+          <tr class="text-center">
+            <!-- <th>ID</th> -->
+            <th>id</th>
+            <th>Tanggal dan Waktu</th>
+            <th>User</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <!-- Data will be loaded dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal for delete confirmation -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this record?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for info -->
+  <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="infoModalLabel">Record Information</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="MQTT-CHART" style="display: block;">
+            <div class="chart-container">
+              <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart1" class="numeric-value"></div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart2" class="numeric-value"></div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart3" class="numeric-value"></div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart4" class="numeric-value"></div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart5" class="numeric-value"></div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart6" class="numeric-value"></div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% endblock %}
 </body>
+<script type="text/javascript">
+  var getEkgDataUrl = "{% url 'get_ekg_data' 0 %}";
+  getEkgDataUrl = getEkgDataUrl.replace('/0/', '/');  // Clean up the URL for later use
+</script>
+
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
+    let dataLead1 = [];
+    let dataLead2 = [];
+    let dataLead3 = [];
+    let dataLeadAVR = [];
+    let dataLeadAVL = [];
+    let dataLeadAVF = [];
+    let labels = [];
+
+    const updateChart = (chartId, chartTitle, chartData, valueId, max) => {
+      const chart = new Chart(document.getElementById(chartId), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: chartTitle,
+              data: chartData,
+              borderColor: "#333",
+              borderWidth: 2,
+              fill: false,
+              lineTension: 0,
+              pointRadius: 0,
+            },
+          ],
+        },
+        options: {
+          animation: false,
+          title: {
+            display: true,
+            text: chartTitle,
+          },
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  ticks: {
+                    // Ensure both positive and negative values are visible
+                    suggestedMin: -max,
+                    suggestedMax: max,
+                  },
+                },
+                gridLines: {
+                  color: "red" /* Set grid line color to red */,
+                  lineWidth: 0.5 /* Increase line width for more solid appearance */,
+                },
+              },
+            ],
+            xAxes: [
+              {
+                gridLines: {
+                  color: "red" /* Set grid line color to red */,
+                  lineWidth: 0.5 /* Increase line width for more solid appearance */,
+                },
+              },
+            ],
+          },
+          legend: { // Deprecated option (for older Chart.js versions)
+            display: false,
+          },
+        },
+      });
+
+      const valueElement = document.getElementById(valueId);
+      // valueElement.innerHTML = `Nilai: ${chartData[chartData.length - 1]}`;
+    }
+
+    const updateAllCharts = () => {
+      updateChart(
+        "chart1",
+        "Lead I",
+        dataLead1,
+        "valueChart1",
+        (max = 300)
+      );
+      updateChart(
+        "chart2",
+        "Lead II",
+        dataLead2,
+        "valueChart2",
+        (max = 80)
+      );
+      updateChart(
+        "chart3",
+        "Lead III",
+        dataLead3,
+        "valueChart3",
+        (max = 80)
+      );
+      updateChart(
+        "chart4",
+        "Lead aVR",
+        dataLeadAVR,
+        "valueChart4",
+        (max = 80)
+      );
+      updateChart(
+        "chart5",
+        "Lead aVL",
+        dataLeadAVL,
+        "valueChart5",
+        (max = 80)
+      );
+      updateChart(
+        "chart6",
+        "Lead aVF",
+        dataLeadAVF,
+        "valueChart6",
+        (max = 80)
+      );
+    };
+
     // Initialize DataTable
     $('#heartRateTable').DataTable({
       "ajax": {
-        "url" : "{% url 'viewPerhitunganData' %}",
+        "url": "{% url 'viewPerhitunganData' %}",
         "dataSrc": "data"
       },
       "columns": [
-        // { "data": "id" },
+        { "data": "id" },  // Assuming the first column is the ID
         { "data": "timestamp" },
         { "data": "user_name", "className": "dt-center" },
         { "data": "action", "className": "dt-center" }
       ]
     });
+
+    var deleteUrl;
+    // Event delegation for delete button click
+    $('#heartRateTable').on('click', '.delete-btn', function (e) {
+      e.preventDefault();
+      deleteUrl = $(this).attr('href');
+      $('#deleteModal').modal('show');
+    });
+
+    // Handle delete confirmation
+    $('#confirmDeleteBtn').on('click', function () {
+      window.location.href = deleteUrl;
+    });
+
+    // Event delegation for info button click
+    $('#heartRateTable').on('click', '.info-btn', function (e) {
+      e.preventDefault();
+      var perhitunganId = $(this).closest('tr').find('td:first').text();  // Get the perhitungan ID from the first column
+      var url = getEkgDataUrl + perhitunganId;  // Append the perhitungan ID to the base URL
+      $.ajax({
+        url: url,
+        method: 'GET',
+        success: function (response) {
+          try {
+              Chart.helpers.each(Chart.instances, (instance) => {
+              instance.destroy();
+            });
+          } catch (error) {
+            console.log("Tidak ada chart untuk dihapus.");
+          }
+
+          dataLead1 = response.lead1;
+          dataLead2 = response.lead2;
+          dataLead3 = response.lead3;
+          dataLeadAVR = response.leadAVR;
+          dataLeadAVL = response.leadAVL;
+          dataLeadAVF = response.leadAVF;
+          labels = new Array(dataLead1.length).fill("");
+          
+          updateAllCharts();
+          $('#infoModal').modal('show');
+        },
+        error: function (xhr) {
+          $('#infoContent').html('<p>Error loading data</p>');
+          $('#infoModal').modal('show');
+        }
+      });
+    });
   });
 </script>
+
 
 
 {% include 'asset/assetScript.html' %}

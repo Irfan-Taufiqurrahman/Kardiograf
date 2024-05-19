@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from kardiograf.models import kardiografUser, HeartRateData
 from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
 from django.urls import reverse
 import json, logging, time, random
 from kardiograf.publish import run as publish_run
@@ -131,20 +132,36 @@ class kardiograf:
         for perhitungan in perhitungan_data:
             user_name = perhitungan.user.username if perhitungan.user else "Unknown"
             delete_url = reverse('delete_perhitungan', kwargs={'pk': perhitungan.id})
-            action_html = f'<a href="{delete_url}"><i class="fa-regular fa-trash-can" style="color: #f50a0a; padding: 15px;"></i></a> ' \
-                      f'<i class="fa-solid fa-info" style="color: #74C0FC; padding: 15px;"></i>'
-    
-            # Format the timestamp as 'Saturday, 24 July 2024 - 15:10:12'
-            timestamp_formatted = perhitungan.timestamp.strftime('%A, %d %B %Y - %H:%M:%S')
+
+            action_html = (
+                f'<a href="{delete_url}" class="delete-btn"><i class="fa-regular fa-trash-can" style="color: #f50a0a; padding: 15px;"></i></a> '
+                f'<a href="#" class="info-btn" data-id="{perhitungan.id}"><i class="fa-solid fa-info" style="color: #74C0FC; padding: 15px;"></i></a>'
+            )
+
+            local_timestamp = timezone.localtime(perhitungan.timestamp)
+            timestamp_formatted = local_timestamp.strftime('%A, %d %B %Y - %H:%M:%S')
 
             data.append({
-                'id': perhitungan.id,
+                'id': perhitungan.id,  # Include the ID field
                 'timestamp': timestamp_formatted,
                 'user_id': perhitungan.user_id,
                 'user_name': user_name,
                 'action': action_html
             })
         return JsonResponse({'data': data})
+
+
+    def get_ekg_data(request, perhitungan_id):
+        ekg_data = EKGData.objects.filter(perhitungan_id=perhitungan_id)
+        data = {
+            'lead1': [data.data_lead1 for data in ekg_data],
+            'lead2': [data.data_lead2 for data in ekg_data],
+            'lead3': [data.data_lead3 for data in ekg_data],
+            'leadAVR': [data.data_leadAVR for data in ekg_data],
+            'leadAVL': [data.data_leadAVL for data in ekg_data],
+            'leadAVF': [data.data_leadAVF for data in ekg_data],
+        }
+        return JsonResponse(data)
 
 
 class errorPage:

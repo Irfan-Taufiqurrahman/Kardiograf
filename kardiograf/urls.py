@@ -15,6 +15,8 @@ urlpatterns = [
     path('save-ekg-data/', kardiograf.save_ekg_data, name="save_ekg_data"),
     path('view-history/', kardiograf.heart_rate_history, name='viewPerhitunganData'),
     path('delete-perhitungan/<int:pk>/', kardiograf.delete_perhitungan, name='delete_perhitungan'),
+    path('get-ekg-data/<int:perhitungan_id>/', kardiograf.get_ekg_data, name='get_ekg_data'),
+
     path('ajikk/', kardiograf.ajikk, name="ajikk"),
     path('api/get_heart_rate_data/<int:user_id>/', kardiograf.get_heart_rate_data_by_user_id, name='get_heart_rate_data_by_user_id'),
     path('error', errorPage.needLogin, name="needLogin"),
