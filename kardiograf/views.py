@@ -162,6 +162,26 @@ class kardiograf:
             'leadAVF': [data.data_leadAVF for data in ekg_data],
         }
         return JsonResponse(data)
+    
+    def get_last_150_data(request):
+        if request.method == 'GET':
+            last_150_data = EKGData.objects.order_by('-id')[:150]
+            data = [
+                {
+                    'data_lead1': ekg.data_lead1,
+                    'data_lead2': ekg.data_lead2,
+                    'data_lead3': ekg.data_lead3,
+                    'data_leadAVR': ekg.data_leadAVR,
+                    'data_leadAVL': ekg.data_leadAVL,
+                    'data_leadAVF': ekg.data_leadAVF,
+                    'bpm': ekg.bpm,
+                    'timestamp': ekg.timestamp,
+                }
+                for ekg in last_150_data
+            ]
+            return JsonResponse(data, safe=False)
+        else:
+            return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 class errorPage:

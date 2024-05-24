@@ -1,23 +1,66 @@
 {% load static %}
-{% include 'asset/assetHeaderAuth.html' %}
 
 <body>
   {% include 'asset/assetNavbar.html' %}
   {% block content %}
-  <section>
+  <section id="hero" class="hero">
     <div class="container position-relative">
-      {% if user.is_authenticated %}
-      <p>ini konten, cuma gatau dibuat apa</p>
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <h2 class="text-white pb-3">Jelajahi Riwayat Kesehatan Jantung Anda dengan Kardiograf</h2>
+          <p>Lihat bagaimana performa jantung anda di hari-hari berbeda. Setelah itu gunakan data riwayat untuk berkonsultasi dengan dokter atau ahli kesehatan lainnya, mempermudah diagnosis dan pengembangan rencana perawatan yang tepat.</p>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 text-center">
+          <img src="{% static 'img/doctor.png' %}" class="img-fluid rounded-4 mb-4 w-50" alt="">
+        </div>
+      </div>
+    </div>
 
-      {% endif %}
+    <div class="icon-boxes position-relative">
+      <div class="container position-relative">
+        <div class="row gy-4 mt-5">
+          <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-command"></i></div>
+              <h4 class="title"><a href="/" class="stretched-link">Home</a></h4>
+            </div>
+          </div><!--End Icon Box -->
+
+          <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-activity"></i></div>
+              <h4 class="title">
+                {% if user.is_authenticated %}
+                <a href="/kardiograf" class="stretched-link">Hearth Rate</a>
+                {%else%}
+                <a href="" class="stretched-link">Control</a>
+                {% endif %}
+              </h4>
+            </div>
+          </div><!--End Icon Box -->
+
+          <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-clock-history"></i></div>
+              <h4 class="title">
+                {% if user.is_authenticated %}
+                <a href="/rekam-medik" class="stretched-link">History</a>
+                {%else%}
+                <a href="" class="stretched-link">Healty</a>
+                {% endif %}
+              </h4>
+            </div>
+          </div><!--End Icon Box -->
+
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Table History -->
   <section>
     <div class="container">
-      <h2>Heart Rate History</h2>
-      <h3>{{ user.username }}'s Heart Rate Data</h3>
+      <h2>{{ user.username }}'s Heart Rate Data</h2>
       <!-- Table to display heart rate data -->
       <table id="heartRateTable" class="display">
         <thead>
@@ -61,7 +104,7 @@
   <!-- Modal for info -->
   <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="infoModalLabel">Record Information</h5>

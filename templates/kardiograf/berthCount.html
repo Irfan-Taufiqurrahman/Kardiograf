@@ -1,70 +1,80 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .chart-container {
-      width: 600px;
-      /* max-width: 800px; */
-      /* height: 400px; */
-      margin: 10px;
-      display: flex;
-      flex-direction: column;
-      /* Charts within container stack vertically */
-    }
+  .chart-container {
+    width: 600px;
+    /* max-width: 600px; */
+    height: 400px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    /* Charts within container stack vertically */
+  }
 
-    /* #resetButton {
+  /* #resetButton {
       margin-top: 20px;
     } */
 
-    .numeric-value {
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
+  .numeric-value {
+    display: none;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
 
-    #timer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      padding: 10px;
-      background-color: #ccc;
-      font-size: 20px;
-      font-weight: bold;
-    }
+  #timer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    background-color: #ccc;
+    font-size: 20px;
+    font-weight: bold;
+  }
 
-    #hero{
-      padding-top: 150px;
-    }
-    #MQTT-CHART {
-        display: none;
-    }
-    
-  </style>
+  #hero {
+    padding-top: 150px;
+  }
+
+  #MQTT-CHART {
+    display: none;
+  }
+
+  .chart-scroll-container {
+  overflow-x: auto;
+  white-space: nowrap; /* Prevent charts from wrapping */
+}
+
+
+</style>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% include 'asset/assetNavbar.html' %}
-    <title>Fetal Heart Rate Simulation</title>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% include 'asset/assetNavbar.html' %}
+  <title>Fetal Heart Rate Simulation</title>
+  <!-- <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script> -->a
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.min.js"></script>
 </head>
+
 <body>
   <section id="hero" class="hero">
     <div class="container position-relative">
       <div class="row gy-5" data-aos="fade-in">
         <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
-          <h3 class="text-white pb-3">Bersama Kardiograf, pantau kesehatan jantung Anda dengan mudah dan optimalkan gaya hidup Anda</h3>
-          <p>Kardiograf menghadirkan solusi pemantauan kesehatan yang mudah dan praktis. Dilengkapi dengan fitur pengukuran detak jantung.</p>
+          <h2 class="text-white pb-3">Lengkapi Deteksi Kesehatan Jantung Anda dengan Kardiograf</h2>
+          <p>Kardiograf hadir dengan fitur Hitung Detak Jantung yang canggih, memungkinkan Anda memantau kesehatan jantung secara mandiri dengan mudah. Fitur ini memanfaatkan teknologi EKG (Elektrokardiogram) untuk mengukur detak jantung Anda secara akurat, memberikan gambaran menyeluruh tentang kesehatan jantung Anda.</p>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 text-center">
-          <img src="{% static 'img/ekg_logo.png' %}" class="img-fluid rounded-4 mb-4" alt="">
+          <img src="{% static 'img/Arzt-1.png' %}" class="img-fluid rounded-4 mb-4" alt="">
         </div>
       </div>
     </div>
@@ -72,14 +82,14 @@
     <div class="icon-boxes position-relative">
       <div class="container position-relative">
         <div class="row gy-4 mt-5">
-          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-command"></i></div>
               <h4 class="title"><a href="/" class="stretched-link">Home</a></h4>
             </div>
           </div><!--End Icon Box -->
 
-          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-activity"></i></div>
               <h4 class="title">
@@ -92,7 +102,7 @@
             </div>
           </div><!--End Icon Box -->
 
-          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-clock-history"></i></div>
               <h4 class="title">
@@ -105,18 +115,11 @@
             </div>
           </div><!--End Icon Box -->
 
-          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
-            <div class="icon-box">
-              <div class="icon"><i class="bi bi-geo-alt"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">History</a></h4>
-            </div>
-          </div><!--End Icon Box -->
-
         </div>
       </div>
     </div>
   </section>
-    
+
   <section id="hitung-detak">
     <div class="container text-center">
       <h1 class="text-center">Pengukuran Detak Jantung</h1>
@@ -124,50 +127,62 @@
       <!-- <button id="resetButton" class="btn btn-outline-warning" style="display: none;">Reset Charts</button> -->
     </div>
   </section>
-  
+
   <section id="MQTT-CHART">
     <div class="container">
-      <div class="row gy-5" data-aos="fade-in">
-        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
-          <div class="chart-container">
-            <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
-            <div id="valueChart1" class="numeric-value"></div>
-            <div id="valueBPM" class="numeric-value"></div>
+        <div id="valueBPM" class="numeric-value text-center"></div>
+        
+          <div class="chart-scroll-container">
+            <div class="chart-container">
+              <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart1" class="numeric-value"></div>
+            </div>
           </div>
-          <div class="chart-container">
-            <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
-            <div id="valueChart2" class="numeric-value"></div>
+
+          <div class="chart-scroll-container">
+            <div class="chart-container">
+              <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart2" class="numeric-value"></div>
+            </div>
           </div>
-          <div class="chart-container">
-            <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
-            <div id="valueChart3" class="numeric-value"></div>
+
+          <div class="chart-scroll-container">
+            <div class="chart-container">
+              <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart3" class="numeric-value"></div>
+            </div>
           </div>
-        </div>
-        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
-          <div class="chart-container">
-            <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
-            <div id="valueChart4" class="numeric-value"></div>
+
+          <div class="chart-scroll-container">
+            <div class="chart-container">
+              <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart4" class="numeric-value"></div>
+            </div>
           </div>
-          <div class="chart-container">
-            <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
-            <div id="valueChart5" class="numeric-value"></div>
+
+          <div class="chart-scroll-container">
+            <div class="chart-container">
+              <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart5" class="numeric-value"></div>
+            </div>
           </div>
-          <div class="chart-container">
-            <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
-            <div id="valueChart6" class="numeric-value"></div>
+
+          <div class="chart-scroll-container">
+            <div class="chart-container">
+              <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
+              <div id="valueChart6" class="numeric-value"></div>
+            </div>
           </div>
-        </div>
-      </div>
       <button id="saveButton" class="btn btn-outline-success" style="display: none;">Save</button>
     </div>
   </section>
-  
+
   <!-- Modal Structure -->
   <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <div class="modal-header" style="background-color: #005B41; color: white;">
+          <h5 class="modal-title text-center" id="successModalLabel">Success</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -193,19 +208,19 @@
     let labels = [];
 
     const userData = {
-        id: "{{ user.id }}",
-        // Add other user data as needed
+      id: "{{ user.id }}",
+      // Add other user data as needed
     };
 
 
     document.getElementById("startButton").addEventListener("click", () => {
       // Hide the start button
       document.getElementById("startButton").style.display = "none";
-  
+
       // let startTime = new Date().getTime();
       // let elapsedTime = 0;
       let receiveData = true;
-  
+
       // Show the reset button after 30 seconds
       setTimeout(() => {
         receiveData = false;
@@ -213,71 +228,79 @@
         document.getElementById("saveButton").style.display = "block";
         receiveData = false; // Stop receiving data
       }, 30000);
-  
-      const updateChart = (chartId, chartTitle, chartData, valueId, max) => {
-        // Destroy existing Chart instance if it exists
-        if (Chart.instances[chartId]) {
-          Chart.instances[chartId].destroy();
-        }
-  
-        const chart = new Chart(document.getElementById(chartId), {
-          type: "line",
-          data: {
-            labels,
-            datasets: [
-              {
-                label: chartTitle,
-                data: chartData,
-                borderColor: "#333",
-                borderWidth: 2,
-                fill: false,
-                lineTension: 0,
-                pointRadius: 0,
-              },
-            ],
-          },
-          options: {
-            animation: false,
-            title: {
-              display: true,
-              text: chartTitle,
-            },
-            scales: {
-              yAxes: [
-                {
-                  ticks: {
-                    ticks: {
-                      // Ensure both positive and negative values are visible
-                      suggestedMin: -max,
-                      suggestedMax: max,
-                    },
-                  },
-                  gridLines: {
-                    color: "red" /* Set grid line color to red */,
-                    lineWidth: 0.5 /* Increase line width for more solid appearance */,
-                  },
-                },
-              ],
-              xAxes: [
-                {
-                  gridLines: {
-                    color: "red" /* Set grid line color to red */,
-                    lineWidth: 0.5 /* Increase line width for more solid appearance */,
-                  },
-                },
-              ],
-            },
-            legend: {
-              display: false,
-            },
-          },
-        });
-  
-        const valueElement = document.getElementById(valueId);
-        valueElement.innerHTML = `Value: ${chartData[chartData.length - 1]}`;        
 
+      const SCROLL_POINT_WIDTH = 10; // Adjust this value as needed
+
+      const updateChart = (chartId, chartTitle, chartData, valueId, max) => {
+          // Destroy existing Chart instance if it exists
+          if (Chart.instances[chartId]) {
+              Chart.instances[chartId].destroy();
+          }
+
+          // Calculate the desired chart width based on data points
+          const dataLength = chartData.length;
+          const chartWidth = dataLength * SCROLL_POINT_WIDTH;
+
+          const chart = new Chart(document.getElementById(chartId), {
+              type: "line",
+              data: {
+                  labels: [...Array(dataLength).keys()], // Generate labels for data points
+                  datasets: [
+                      {
+                          label: chartTitle,
+                          data: chartData,
+                          borderColor: "#333",
+                          borderWidth: 2,
+                          fill: false,
+                          lineTension: 0,
+                          pointRadius: 0,
+                      },
+                  ],
+              },
+              options: {
+                  animation: false, // Disable unnecessary animations
+                  title: {
+                      display: true,
+                      text: chartTitle,
+                  },
+                  scales: {
+                      yAxes: [
+                          {
+                              ticks: {
+                                  ticks: {
+                                      // Ensure both positive and negative values are visible
+                                      suggestedMin: -max,
+                                      suggestedMax: max,
+                                  },
+                              },
+                              gridLines: {
+                                  color: "white" /* Set grid line color to red */,
+                                  lineWidth: 0.5 /* Increase line width for more solid appearance */,
+                              },
+                          },
+                      ],
+                      xAxes: [
+                          {
+                              display: true, // Enable x-axis for scrolling
+                              gridLines: {
+                                  color: "white" /* Set grid line color to red */,
+                                  lineWidth: 0.5 /* Increase line width for more solid appearance */,
+                              },
+                          },
+                      ],
+                  },
+                  legend: {
+                      display: false,
+                  },
+                  responsive: true, // Enable responsive behavior
+                  maintainAspectRatio: false, // Allow height adjustments
+
+              },
+          });
+
+          chart.canvas.parentNode.style.width = chartWidth + 'px'; // Set container width
       };
-  
+
       const updateAllCharts = () => {
         updateChart(
           "chart1",
@@ -322,87 +345,97 @@
           (max = 80)
         );
       };
-  
-      const topic = "ekg/ajik";
-      const clientId = "mqttjs_" + Math.random().toString(16).substr(2, 8);
-      const host = "ws://broker.emqx.io:8083/mqtt";
-      const options = {
-        keepalive: 60,
-        clientId: clientId,
-        protocolId: "MQTT",
-        protocolVersion: 4,
-        clean: true,
-        reconnectPeriod: 1000,
-        connectTimeout: 30 * 1000,
-        will: {
-          topic: "WillMsg",
-          payload: "Connection Closed abnormally..!",
-          qos: 0,
-          retain: false,
-        },
-      };
-  
-      console.log("Connecting mqtt client");
-      const client = mqtt.connect(host, options);
-      client.on("error", (err) => {
-        console.log("Connection error: ", err);
-        client.end();
-      });
-      client.on("reconnect", () => {
-        console.log("Reconnecting...");
-      });
-      client.on("connect", function () {
-        console.log("Connected to MQTT broker, with topic = " + topic);
-        client.subscribe(topic, { qos: 0 });
-      });
-  
-      client.on("message", (topic, message, packet) => {
-        if (!receiveData) return; // Stop receiving data after 30 seconds
-  
-        var now = new Date();
-        var currentMinute = now.getMinutes();
-        var currentSecond = now.getSeconds();
-        var currentMillisecond = now.getMilliseconds();
-        var currentTime =
-          currentMinute + ":" + currentSecond + "." + currentMillisecond;
-  
-        console.log(`${currentTime} - ${message.toString()}`);
-  
-        const dataString = message.toString();
-        const dataArray = dataString.split(",").map(parseFloat);
-  
-        for (let i = 0; i < dataArray.length - 1; i += 2) {
-          const lead1 = dataArray[i];
-          const lead2 = dataArray[i + 1];
-  
-          dataLead1.push(lead1);
-          dataLead2.push(lead2);
-          dataLead3.push(lead2 - lead1);
-          dataLeadAVR.push(-1 * ((lead1 + lead2) / 2));
-          dataLeadAVL.push(lead1 - lead2 / 2);
-          dataLeadAVF.push(lead2 - lead1 / 2);
-          labels.push("");
-  
-          if (dataLead1.length > 200) {
-            dataLead1.shift();
-            dataLead2.shift();
-            dataLead3.shift();
-            dataLeadAVR.shift();
-            dataLeadAVL.shift();
-            dataLeadAVF.shift();
-            labels.shift();
+
+      const brokerUrl = 'wss://broker.emqx.io:8084/mqtt';
+      const clientId = 'publish-' + Math.random().toString(16).substr(2, 8);
+      const topic = 'ekg/ajik';
+
+      function connect() {
+        const client = new Paho.Client(brokerUrl, clientId);
+
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        const options = {
+          onSuccess: onConnect,
+          onFailure: onFailure,
+          useSSL: true,
+          timeout: 3,
+          reconnect: true
+        };
+
+        client.connect(options);
+
+        function onConnect() {
+          console.log('Connected to MQTT broker');
+          client.subscribe(topic, { qos: 0 }, (err) => {
+            if (err) {
+              console.error('Subscription failed: ', err);
+            } else {
+              console.log(`Subscribed to topic: ${topic}`);
+            }
+          });
+        }
+
+        function onFailure(err) {
+          console.error('Connection failed: ', err);
+        }
+
+        function onConnectionLost(responseObject) {
+          if (responseObject.errorCode !== 0) {
+            console.error('Connection lost: ', responseObject.errorMessage);
           }
         }
-  
-        updateAllCharts();
-  
-        const bpm = dataArray[dataArray.length - 1];
-  
-        const valueBPM = document.getElementById("valueBPM");
-        valueBPM.innerHTML = `BPM: ${bpm}`;
-        document.getElementById("MQTT-CHART").style.display = "block";
 
-      });
+        function onMessageArrived(message) {
+          if (!receiveData) return; // Stop receiving data after 30 seconds
+
+          var now = new Date();
+          var currentMinute = now.getMinutes();
+          var currentSecond = now.getSeconds();
+          var currentMillisecond = now.getMilliseconds();
+          var currentTime =
+            currentMinute + ":" + currentSecond + "." + currentMillisecond;
+
+          console.log(`${currentTime} - ${message.payloadString.toString()}`);
+
+          const dataString = message.payloadString.toString();
+          const dataArray = dataString.split(",").map(parseFloat);
+
+          for (let i = 0; i < dataArray.length - 1; i += 2) {
+            const lead1 = dataArray[i];
+            const lead2 = dataArray[i + 1];
+
+            dataLead1.push(lead1);
+            dataLead2.push(lead2);
+            dataLead3.push(lead2 - lead1);
+            dataLeadAVR.push(-1 * ((lead1 + lead2) / 2));
+            dataLeadAVL.push(lead1 - lead2 / 2);
+            dataLeadAVF.push(lead2 - lead1 / 2);
+            labels.push("");
+
+            if (dataLead1.length > 4000) {
+              dataLead1.shift();
+              dataLead2.shift();
+              dataLead3.shift();
+              dataLeadAVR.shift();
+              dataLeadAVL.shift();
+              dataLeadAVF.shift();
+              labels.shift();
+            }
+          }
+
+          updateAllCharts();
+
+          const bpm = dataArray[dataArray.length - 1];
+
+          const valueBPM = document.getElementById("valueBPM");
+          valueBPM.innerHTML = `BPM: ${bpm}`;
+          document.getElementById("MQTT-CHART").style.display = "block";
+        }
+      }
+
+      connect();
     });
     document.getElementById("saveButton").addEventListener("click", () => {
       // Prepare the data to send to the server
@@ -410,38 +443,37 @@
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}'); // Add this line
       // Push individual values to the arrays
       //if you want get all data just delete .slice(-150)
-      dataLead1.slice(-150).forEach(lead1 => formData.append('data_lead1', lead1));
-      dataLead2.slice(-150).forEach(lead2 => formData.append('data_lead2', lead2));
-      dataLead3.slice(-150).forEach(lead3 => formData.append('data_lead3', lead3));
-      dataLeadAVR.slice(-150).forEach(leadAVR => formData.append('data_leadAVR', leadAVR));
-      dataLeadAVL.slice(-150).forEach(leadAVL => formData.append('data_leadAVL', leadAVL));
-      dataLeadAVF.slice(-150).forEach(leadAVF => formData.append('data_leadAVF', leadAVF));
+      dataLead1.slice(-1000).forEach(lead1 => formData.append('data_lead1', lead1));
+      dataLead2.slice(-1000).forEach(lead2 => formData.append('data_lead2', lead2));
+      dataLead3.slice(-1000).forEach(lead3 => formData.append('data_lead3', lead3));
+      dataLeadAVR.slice(-1000).forEach(leadAVR => formData.append('data_leadAVR', leadAVR));
+      dataLeadAVL.slice(-1000).forEach(leadAVL => formData.append('data_leadAVL', leadAVL));
+      dataLeadAVF.slice(-1000).forEach(leadAVF => formData.append('data_leadAVF', leadAVF));
       bpm.slice(-1).forEach(b => formData.append('bpm', b));
 
       formData.append('data_user', parseInt(userData.id));  // Parse user_id as an integer
 
       // Send a POST request to the server to save the data
       fetch('/save-ekg-data/', {
-          method: 'POST',
-          body: formData
+        method: 'POST',
+        body: formData
       })
-      .then(response => {
+        .then(response => {
           if (response.ok) {
-              console.log('Data saved successfully.');
-              var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            console.log('Data saved successfully.');
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
             successModal.show();
           } else {
-              console.error('Failed to save data.');
+            console.error('Failed to save data.');
           }
-      })
-      .catch(error => console.error('Error:', error));
-    }); 
+        })
+        .catch(error => console.error('Error:', error));
+    });
 
   </script>
-  
-  
-  
+
 
 </body>
+
 </html>
 {% include 'asset/assetScript.html' %}

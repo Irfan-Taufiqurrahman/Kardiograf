@@ -164,3 +164,5 @@ def connect_to_mqtt():
     client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
     client.connect(MQTT_BROKER_URL, MQTT_BROKER_PORT)
     return client
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
