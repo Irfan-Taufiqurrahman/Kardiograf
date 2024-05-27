@@ -24,7 +24,7 @@
     } */
 
   .numeric-value {
-    display: none;
+    /* display: none; */
     font-size: 18px;
     font-weight: bold;
     margin-top: 10px;
@@ -131,42 +131,36 @@
   <section id="MQTT-CHART">
     <div class="container">
         <div id="valueBPM" class="numeric-value text-center"></div>
-        
           <div class="chart-scroll-container">
             <div class="chart-container">
               <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart1" class="numeric-value"></div>
             </div>
           </div>
-
           <div class="chart-scroll-container">
             <div class="chart-container">
               <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart2" class="numeric-value"></div>
             </div>
           </div>
-
           <div class="chart-scroll-container">
             <div class="chart-container">
               <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart3" class="numeric-value"></div>
             </div>
           </div>
-
           <div class="chart-scroll-container">
             <div class="chart-container">
               <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart4" class="numeric-value"></div>
             </div>
           </div>
-
           <div class="chart-scroll-container">
             <div class="chart-container">
               <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart5" class="numeric-value"></div>
             </div>
           </div>
-
           <div class="chart-scroll-container">
             <div class="chart-container">
               <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
@@ -204,7 +198,7 @@
     let dataLeadAVR = [];
     let dataLeadAVL = [];
     let dataLeadAVF = [];
-    let bpm = [];
+    let bpmData = [];
     let labels = [];
 
     const userData = {
@@ -229,7 +223,7 @@
         receiveData = false; // Stop receiving data
       }, 30000);
 
-      const SCROLL_POINT_WIDTH = 10; // Adjust this value as needed
+      const SCROLL_POINT_WIDTH = 1; // Adjust this value as needed
 
       const updateChart = (chartId, chartTitle, chartData, valueId, max) => {
           // Destroy existing Chart instance if it exists
@@ -274,16 +268,19 @@
                                   },
                               },
                               gridLines: {
-                                  color: "white" /* Set grid line color to red */,
+                                  color: "red" /* Set grid line color to red */,
                                   lineWidth: 0.5 /* Increase line width for more solid appearance */,
                               },
                           },
                       ],
                       xAxes: [
                           {
-                              display: true, // Enable x-axis for scrolling
+                              // Hide x-axis labels
+                              ticks: {
+                                display: false, // Set to 'false' to hide x-axis labels
+                              },
                               gridLines: {
-                                  color: "white" /* Set grid line color to red */,
+                                  color: "red" /* Set grid line color to red */,
                                   lineWidth: 0.5 /* Increase line width for more solid appearance */,
                               },
                           },
@@ -294,7 +291,6 @@
                   },
                   responsive: true, // Enable responsive behavior
                   maintainAspectRatio: false, // Allow height adjustments
-
               },
           });
 
@@ -414,7 +410,7 @@
             dataLeadAVF.push(lead2 - lead1 / 2);
             labels.push("");
 
-            if (dataLead1.length > 4000) {
+            if (dataLead1.length > 6000) {
               dataLead1.shift();
               dataLead2.shift();
               dataLead3.shift();
@@ -428,6 +424,7 @@
           updateAllCharts();
 
           const bpm = dataArray[dataArray.length - 1];
+          bpmData.push(bpm);
 
           const valueBPM = document.getElementById("valueBPM");
           valueBPM.innerHTML = `BPM: ${bpm}`;
@@ -443,13 +440,14 @@
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}'); // Add this line
       // Push individual values to the arrays
       //if you want get all data just delete .slice(-150)
-      dataLead1.slice(-1000).forEach(lead1 => formData.append('data_lead1', lead1));
-      dataLead2.slice(-1000).forEach(lead2 => formData.append('data_lead2', lead2));
-      dataLead3.slice(-1000).forEach(lead3 => formData.append('data_lead3', lead3));
-      dataLeadAVR.slice(-1000).forEach(leadAVR => formData.append('data_leadAVR', leadAVR));
-      dataLeadAVL.slice(-1000).forEach(leadAVL => formData.append('data_leadAVL', leadAVL));
-      dataLeadAVF.slice(-1000).forEach(leadAVF => formData.append('data_leadAVF', leadAVF));
-      bpm.slice(-1).forEach(b => formData.append('bpm', b));
+      dataLead1.slice(-6000).forEach(lead1 => formData.append('data_lead1', lead1));
+      dataLead2.slice(-6000).forEach(lead2 => formData.append('data_lead2', lead2));
+      dataLead3.slice(-6000).forEach(lead3 => formData.append('data_lead3', lead3));
+      dataLeadAVR.slice(-6000).forEach(leadAVR => formData.append('data_leadAVR', leadAVR));
+      dataLeadAVL.slice(-6000).forEach(leadAVL => formData.append('data_leadAVL', leadAVL));
+      dataLeadAVF.slice(-6000).forEach(leadAVF => formData.append('data_leadAVF', leadAVF));
+      // bpm.slice(-1).forEach(b => formData.append('bpm', b));
+      bpmData.forEach(b => formData.append('bpm', b));
 
       formData.append('data_user', parseInt(userData.id));  // Parse user_id as an integer
 

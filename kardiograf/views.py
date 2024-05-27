@@ -116,10 +116,7 @@ class kardiograf:
             return JsonResponse({'message': 'Data saved successfully'}, status=200)
         else:
             return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-        # else:
-        #     return render(request, 'ekg_form.html')  # Render a form template (if needed)
-
+        
     def delete_perhitungan(request, pk):
         perhitungan = get_object_or_404(Perhitungan, pk=pk)
         perhitungan.delete()
@@ -127,25 +124,30 @@ class kardiograf:
         return redirect('rekamMedik')
 
     def heart_rate_history(request):
-        perhitungan_data = Perhitungan.objects.all()
+        perhitungan_data = Perhitungan.objects.all().order_by('-id')
         data = []
         for perhitungan in perhitungan_data:
             user_name = perhitungan.user.username if perhitungan.user else "Unknown"
             delete_url = reverse('delete_perhitungan', kwargs={'pk': perhitungan.id})
 
+            last_ekg_data = EKGData.objects.filter(perhitungan=perhitungan).order_by('-id').first()
+
+            # Extract last_bpm from the last_ekg_data object (if it exists)
+            last_bpm = last_ekg_data.bpm if last_ekg_data else None  # Handle potential absence
             action_html = (
                 f'<a href="{delete_url}" class="delete-btn"><i class="fa-regular fa-trash-can" style="color: #f50a0a; padding: 15px;"></i></a> '
                 f'<a href="#" class="info-btn" data-id="{perhitungan.id}"><i class="fa-solid fa-info" style="color: #74C0FC; padding: 15px;"></i></a>'
             )
 
             local_timestamp = timezone.localtime(perhitungan.timestamp)
-            timestamp_formatted = local_timestamp.strftime('%A, %d %B %Y - %H:%M:%S')
+            timestamp_formatted = local_timestamp.strftime('%A, %d %B %Y - %H:%M:%S')            
 
             data.append({
                 'id': perhitungan.id,  # Include the ID field
                 'timestamp': timestamp_formatted,
                 'user_id': perhitungan.user_id,
                 'user_name': user_name,
+                'last_bpm': last_bpm,  # Add last_bpm to the data dictionary
                 'action': action_html
             })
         return JsonResponse({'data': data})
@@ -154,6 +156,7 @@ class kardiograf:
     def get_ekg_data(request, perhitungan_id):
         ekg_data = EKGData.objects.filter(perhitungan_id=perhitungan_id)
         data = {
+            'bpm': [data.bpm for data in ekg_data],
             'lead1': [data.data_lead1 for data in ekg_data],
             'lead2': [data.data_lead2 for data in ekg_data],
             'lead3': [data.data_lead3 for data in ekg_data],
