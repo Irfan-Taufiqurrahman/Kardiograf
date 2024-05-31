@@ -59,7 +59,7 @@
               <div class="icon"><i class="bi bi-activity"></i></div>
               <h4 class="title">
                 {% if user.is_authenticated %}
-                <a href="/kardiograf" class="stretched-link">Hearth Rate</a>
+                <a href="/kardiograf" class="stretched-link">Pengukuran</a>
                 {%else%}
                 <a href="" class="stretched-link">Control</a>
                 {% endif %}
@@ -72,7 +72,7 @@
               <div class="icon"><i class="bi bi-clock-history"></i></div>
               <h4 class="title">
                 {% if user.is_authenticated %}
-                <a href="/rekam-medik" class="stretched-link">History</a>
+                <a href="/rekam-medik" class="stretched-link">Riwayat</a>
                 {%else%}
                 <a href="" class="stretched-link">Healty</a>
                 {% endif %}

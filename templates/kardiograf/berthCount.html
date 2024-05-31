@@ -94,7 +94,7 @@
               <div class="icon"><i class="bi bi-activity"></i></div>
               <h4 class="title">
                 {% if user.is_authenticated %}
-                <a href="/kardiograf" class="stretched-link">Hearth Rate</a>
+                <a href="/kardiograf" class="stretched-link">Pengukuran</a>
                 {%else%}
                 <a href="" class="stretched-link">Control</a>
                 {% endif %}
@@ -107,7 +107,7 @@
               <div class="icon"><i class="bi bi-clock-history"></i></div>
               <h4 class="title">
                 {% if user.is_authenticated %}
-                <a href="/rekam-medik" class="stretched-link">History</a>
+                <a href="/rekam-medik" class="stretched-link">Riwayat</a>
                 {%else%}
                 <a href="" class="stretched-link">Healty</a>
                 {% endif %}
@@ -133,36 +133,42 @@
         <div id="valueBPM" class="numeric-value text-center"></div>
           <div class="chart-scroll-container">
             <div class="chart-container">
+              <p>Lead 1: </p>
               <canvas id="chart1" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart1" class="numeric-value"></div>
             </div>
           </div>
           <div class="chart-scroll-container">
             <div class="chart-container">
+              <p>Lead 2: </p>
               <canvas id="chart2" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart2" class="numeric-value"></div>
             </div>
           </div>
           <div class="chart-scroll-container">
             <div class="chart-container">
+              <p>Lead 3: </p>
               <canvas id="chart3" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart3" class="numeric-value"></div>
             </div>
           </div>
           <div class="chart-scroll-container">
             <div class="chart-container">
+              <p>Lead AVR: </p>
               <canvas id="chart4" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart4" class="numeric-value"></div>
             </div>
           </div>
           <div class="chart-scroll-container">
             <div class="chart-container">
+              <p>Lead AVL: </p>
               <canvas id="chart5" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart5" class="numeric-value"></div>
             </div>
           </div>
           <div class="chart-scroll-container">
             <div class="chart-container">
+              <p>Lead AVF: </p>
               <canvas id="chart6" style="width: 100%; height: 30vh"></canvas>
               <div id="valueChart6" class="numeric-value"></div>
             </div>
