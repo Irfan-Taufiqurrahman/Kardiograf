@@ -3,10 +3,10 @@
 <html lang="en">
 <style>
   body {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
   }
 
   .chart-container {
@@ -40,10 +40,6 @@
     font-weight: bold;
   }
 
-  #hero {
-    padding-top: 150px;
-  }
-
   #MQTT-CHART {
     display: none;
   }
@@ -66,6 +62,7 @@
 </head>
 
 <body>
+  <main id="main">
   <section id="hero" class="hero">
     <div class="container position-relative">
       <div class="row gy-5" data-aos="fade-in">
@@ -175,9 +172,10 @@
           </div>
       <button id="saveButton" class="btn btn-outline-success" style="display: none;">Save</button>
     </div>
+    
   </section>
-
-  <!-- Modal Structure -->
+</main>
+<!-- Modal Structure -->
   <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -194,8 +192,8 @@
       </div>
     </div>
   </div>
-
-
+  {% include 'asset/assetFooter.html' %}
+  
   <script>
     // Declare variables outside of event listeners
     let dataLead1 = [];
